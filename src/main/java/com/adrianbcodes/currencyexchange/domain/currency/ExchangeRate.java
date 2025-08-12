@@ -4,18 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-public class ExchangeRate {
-    private final BigDecimal rate;
-
+public record ExchangeRate(BigDecimal rate) {
     public ExchangeRate(BigDecimal rate) {
         Objects.requireNonNull(rate);
-        if(rate.compareTo(BigDecimal.ZERO) <= 0)
+        if (rate.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("Exchange rate must be positive");
         this.rate = rate.setScale(4, RoundingMode.UP);
-    }
-
-    public BigDecimal getRate() {
-        return rate;
     }
 
     @Override

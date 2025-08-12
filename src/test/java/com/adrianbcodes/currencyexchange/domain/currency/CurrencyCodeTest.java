@@ -9,7 +9,7 @@ class CurrencyCodeTest {
     @Test
     void currencyCodeCreation() {
         CurrencyCode currencyCode = new CurrencyCode("USD");
-        assertEquals("USD", currencyCode.getCode());
+        assertEquals("USD", currencyCode.code());
     }
 
     @Test
@@ -20,7 +20,7 @@ class CurrencyCodeTest {
     @Test
     void currencyCodeCreation_convertsLowerCharactersToUpper() {
         CurrencyCode currencyCode = new CurrencyCode("usD");
-        assertEquals("USD", currencyCode.getCode());
+        assertEquals("USD", currencyCode.code());
     }
 
     @Test

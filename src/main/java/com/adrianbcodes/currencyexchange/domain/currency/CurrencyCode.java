@@ -2,20 +2,15 @@ package com.adrianbcodes.currencyexchange.domain.currency;
 
 import java.util.Objects;
 
-public class CurrencyCode {
+public record CurrencyCode(String code) {
     private static final String FORMAT = "^[A-Z]{3}$";
-    private final String code;
 
     public CurrencyCode(String code) {
         Objects.requireNonNull(code);
         String codeUpper = code.toUpperCase();
-        if(!codeUpper.matches(FORMAT))
+        if (!codeUpper.matches(FORMAT))
             throw new IllegalArgumentException("Invalid Currency Code: " + code);
         this.code = codeUpper;
-    }
-
-    public String getCode() {
-        return code;
     }
 
     @Override
@@ -24,6 +19,7 @@ public class CurrencyCode {
         CurrencyCode that = (CurrencyCode) o;
         return Objects.equals(code, that.code);
     }
+
 
     @Override
     public int hashCode() {
