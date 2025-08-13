@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,22 +34,22 @@ class RedisCacheService implements CacheService {
         if(value == null)
             return Optional.empty();
         CurrencyRateValueDto dto = objectMapper.convertValue(value, CurrencyRateValueDto.class);
-        CurrencyRate rate = new CurrencyRate(codePair.from(), codePair.to(), new ExchangeRate(dto.rate()), dto.date());
+        CurrencyRate rate = new CurrencyRate(codePair, new ExchangeRate(dto.rate()), dto.date());
         return Optional.of(rate);
     }
 
     @Override
-    public void putRate(CurrencyCodePair codePair, ExchangeRate rate) {
-        CurrencyRateValueDto dto = new CurrencyRateValueDto(rate.value(), Instant.now());
-        redisTemplate.opsForHash().put(CACHE_KEY, codePair.toKey(), dto);
+    public void putRate(CurrencyRate rate) {
+        CurrencyRateValueDto dto = new CurrencyRateValueDto(rate.rate().value(), rate.date());
+        redisTemplate.opsForHash().put(CACHE_KEY, rate.codePair().toKey(), dto);
     }
 
     @Override
-    public void putRates(Map<CurrencyCodePair, ExchangeRate> rates) {
+    public void putRates(Map<CurrencyCodePair, CurrencyRate> rates) {
         Map<String, CurrencyRateValueDto> mapToPut = rates.entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().toKey(),
-                        entry -> new CurrencyRateValueDto(entry.getValue().value(), Instant.now())
+                        entry -> new CurrencyRateValueDto(entry.getValue().rate().value(), entry.getValue().date())
                 ));
         redisTemplate.opsForHash().putAll(CACHE_KEY, mapToPut);
     }

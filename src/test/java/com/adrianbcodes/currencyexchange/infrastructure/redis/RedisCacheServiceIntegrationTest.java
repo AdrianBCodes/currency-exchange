@@ -29,28 +29,28 @@ class RedisCacheServiceIntegrationTest {
     @Test
     void getRateAndPutRate_storesValidRateAndTimeStamp() {
         CurrencyCodePair codePair = new CurrencyCodePair(new CurrencyCode("USD"), new CurrencyCode("PLN"));
-        ExchangeRate exchangeRate = new ExchangeRate(BigDecimal.valueOf(4.1234));
+        CurrencyRate currencyRate = new CurrencyRate(codePair, new ExchangeRate(BigDecimal.valueOf(4.1234)), Instant.now());
 
         Instant before = Instant.now();
-        cacheService.putRate(codePair, exchangeRate);
+        cacheService.putRate(currencyRate);
         Instant after = Instant.now();
 
         Optional<CurrencyRate> result = cacheService.getRate(codePair);
         assertTrue(result.isPresent());
-        assertEquals(result.get().getRate(), exchangeRate);
-        assertFalse(result.get().getDate().isBefore(before));
-        assertFalse(result.get().getDate().isAfter(after));
+        assertEquals(result.get(), currencyRate);
+        assertFalse(result.get().date().isBefore(before));
+        assertFalse(result.get().date().isAfter(after));
     }
 
     @Test
     void putRates_storesAllRates() {
         CurrencyCodePair codePair = new CurrencyCodePair(new CurrencyCode("USD"), new CurrencyCode("PLN"));
-        ExchangeRate exchangeRate = new ExchangeRate(BigDecimal.valueOf(4.1234));
+        CurrencyRate currencyRate = new CurrencyRate(codePair, new ExchangeRate(BigDecimal.valueOf(4.1234)), Instant.now());
         CurrencyCodePair codePair2 = new CurrencyCodePair(new CurrencyCode("EUR"), new CurrencyCode("PLN"));
-        ExchangeRate exchangeRate2 = new ExchangeRate(BigDecimal.valueOf(4.4321));
-        Map<CurrencyCodePair, ExchangeRate> mapToPut = new HashMap<>() {{
-            put(codePair, exchangeRate);
-            put(codePair2, exchangeRate2);
+        CurrencyRate currencyRate2 = new CurrencyRate(codePair2, new ExchangeRate(BigDecimal.valueOf(4.4321)), Instant.now());
+        Map<CurrencyCodePair, CurrencyRate> mapToPut = new HashMap<>() {{
+            put(codePair, currencyRate);
+            put(codePair2, currencyRate2);
         }};
 
         cacheService.putRates(mapToPut);
@@ -59,7 +59,7 @@ class RedisCacheServiceIntegrationTest {
         Optional<CurrencyRate> result2 = cacheService.getRate(codePair2);
         assertTrue(result.isPresent());
         assertTrue(result2.isPresent());
-        assertEquals(result.get().getRate(), exchangeRate);
-        assertEquals(result2.get().getRate(), exchangeRate2);
+        assertEquals(result.get(), currencyRate);
+        assertEquals(result2.get(), currencyRate2);
     }
 }
