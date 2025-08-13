@@ -12,24 +12,4 @@ public record CurrencyCode(String code) {
             throw new IllegalArgumentException("Invalid Currency Code: " + code);
         this.code = codeUpper;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        CurrencyCode that = (CurrencyCode) o;
-        return Objects.equals(code, that.code);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(code);
-    }
-
-    @Override
-    public String toString() {
-        return "CurrencyCode{" +
-                "code='" + code + '\'' +
-                '}';
-    }
 }

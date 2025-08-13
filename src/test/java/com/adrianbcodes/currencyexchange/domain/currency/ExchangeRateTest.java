@@ -11,19 +11,19 @@ class ExchangeRateTest {
     @Test
     void exchangeRateCreation() {
         ExchangeRate exchangeRate = new ExchangeRate(BigDecimal.valueOf(1.4351));
-        assertEquals(BigDecimal.valueOf(1.4351), exchangeRate.rate());
+        assertEquals(BigDecimal.valueOf(1.4351), exchangeRate.value());
     }
 
     @Test
     void exchangeRateCreation_ReducesScaleTo4AndRoundsUp() {
         ExchangeRate exchangeRate = new ExchangeRate(BigDecimal.valueOf(1.43511));
-        assertEquals(BigDecimal.valueOf(1.4352), exchangeRate.rate());
+        assertEquals(BigDecimal.valueOf(1.4352), exchangeRate.value());
     }
 
     @Test
     void exchangeRateCreation_IncreasesScaleTo4() {
         ExchangeRate exchangeRate = new ExchangeRate(BigDecimal.valueOf(1.43));
-        assertEquals("1.4300", exchangeRate.rate().toString());
+        assertEquals("1.4300", exchangeRate.value().toString());
     }
 
     @Test

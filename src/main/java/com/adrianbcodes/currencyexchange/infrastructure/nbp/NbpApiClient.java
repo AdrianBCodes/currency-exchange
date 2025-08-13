@@ -2,14 +2,16 @@ package com.adrianbcodes.currencyexchange.infrastructure.nbp;
 
 import com.adrianbcodes.currencyexchange.infrastructure.nbp.response.NbpTableResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-public class NbpWebClient {
+@Component
+public class NbpApiClient {
     private final WebClient webClient;
 
-    public NbpWebClient(@Qualifier("nbpWebClient") WebClient webClient) {
+    public NbpApiClient(@Qualifier("nbpWebClient") WebClient webClient) {
         this.webClient = webClient;
     }
 
