@@ -11,6 +11,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,6 +68,16 @@ public class NbpRatesScheduler {
                                 new ExchangeRate(rate.mid()),
                                 Instant.now()
                         )
+                ));
+
+
+        // TODO: move to initial redis setup
+        CurrencyCodePair codePairPLN = new CurrencyCodePair(new CurrencyCode("PLN"), new CurrencyCode("PLN"));
+        ratesToCache.put(codePairPLN,
+                new CurrencyRate(
+                        codePairPLN,
+                        new ExchangeRate(BigDecimal.ONE),
+                        Instant.now()
                 ));
 
         cacheService.clearCache();
