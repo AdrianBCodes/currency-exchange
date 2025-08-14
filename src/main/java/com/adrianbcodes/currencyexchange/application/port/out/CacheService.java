@@ -10,4 +10,5 @@ public interface CacheService {
     Optional<CurrencyRate> getRate(CurrencyCodePair codePair);
     void putRate(CurrencyRate rate);
     void putRates(Map<CurrencyCodePair, CurrencyRate> rates);
+    void clearCache();
 }

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 class RedisCacheService implements CacheService {
 
+    private final static String CACHE_KEY_DEFAULT = "default_currency_exchange_rates";
     private final static String CACHE_KEY = "currency_exchange_rates";
 
     private final RedisTemplate<String, CurrencyRateValueDto> redisTemplate;
@@ -30,7 +31,8 @@ class RedisCacheService implements CacheService {
 
     @Override
     public Optional<CurrencyRate> getRate(CurrencyCodePair codePair) {
-        Object value = redisTemplate.opsForHash().get(CACHE_KEY, codePair.toKey());
+        String cacheKey = codePair.to().code().equals("PLN") ? CACHE_KEY_DEFAULT : CACHE_KEY;
+        Object value = redisTemplate.opsForHash().get(cacheKey, codePair.toKey());
         if(value == null)
             return Optional.empty();
         CurrencyRateValueDto dto = objectMapper.convertValue(value, CurrencyRateValueDto.class);
@@ -51,6 +53,11 @@ class RedisCacheService implements CacheService {
                         entry -> entry.getKey().toKey(),
                         entry -> new CurrencyRateValueDto(entry.getValue().rate().value(), entry.getValue().date())
                 ));
-        redisTemplate.opsForHash().putAll(CACHE_KEY, mapToPut);
+        redisTemplate.opsForHash().putAll(CACHE_KEY_DEFAULT, mapToPut);
+    }
+
+    @Override
+    public void clearCache() {
+        redisTemplate.delete(CACHE_KEY);
     }
 }
